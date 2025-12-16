@@ -13,6 +13,7 @@ jobs:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false  # 即使一个作业失败，其他作业也会继续执行
       matrix:
         include:
           - os: windows-latest
