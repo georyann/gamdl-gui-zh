@@ -42,10 +42,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pyinstaller
         # 尝试从requirements.txt安装，如果失败则直接安装
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt || echo "Failed to install from requirements.txt"
-        fi
-        pip install .
+        pip install -r requirements.txt || pip install .
         
     - name: Build with PyInstaller
       run: |
