@@ -35,7 +35,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y zip
+        sudo apt-get install -y zip python3-tk
         
     - name: Install Python dependencies
       run: |
@@ -63,9 +63,9 @@ jobs:
     - name: Prepare Upload Asset (macOS)
       if: matrix.os == 'macos-latest'
       run: |
-        # macOS: 压缩 .app 文件
+        # macOS: 压缩整个目录
         cd dist
-        zip -r Gamdl-GUI-ZH-macOS.zip Gamdl-GUI-ZH.app
+        zip -r Gamdl-GUI-ZH-macOS.zip Gamdl-GUI-ZH
         mv Gamdl-GUI-ZH-macOS.zip ../${{ matrix.asset_name }}
 
     - name: Release
