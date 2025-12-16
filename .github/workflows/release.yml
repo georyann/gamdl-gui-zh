@@ -16,13 +16,10 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: Gamdl-GUI-ZH.exe
             asset_name: Gamdl-GUI-ZH-Windows.exe
           - os: macos-latest
-            artifact_name: Gamdl-GUI-ZH.app
             asset_name: Gamdl-GUI-ZH-macOS.zip
           - os: ubuntu-latest
-            artifact_name: Gamdl-GUI-ZH
             asset_name: Gamdl-GUI-ZH-Linux
 
     steps:
@@ -33,44 +30,45 @@ jobs:
       with:
         python-version: '3.10'
         
-    - name: Install dependencies
+    - name: Install system dependencies (Ubuntu only)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y zip
+        
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller
-        pip install -r requirements.txt
+        # 尝试从requirements.txt安装，如果失败则直接安装
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt || echo "Failed to install from requirements.txt"
+        fi
         pip install .
         
-    - name: Build with PyInstaller (Windows/Linux)
-      if: matrix.os != 'macos-latest'
+    - name: Build with PyInstaller
       run: |
         pyinstaller --clean --noconfirm gui_app.spec
-        
-    - name: Build with PyInstaller (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        pyinstaller --clean --noconfirm gui_app.spec
-        # macOS 需要压缩 .app 文件，否则上传后可能损坏
-        cd dist
-        zip -r Gamdl-GUI-ZH-macOS.zip Gamdl-GUI-ZH.app
         
     - name: Prepare Upload Asset (Windows)
       if: matrix.os == 'windows-latest'
       run: |
         # Windows: 直接复制可执行文件
-        cp dist/Gamdl-GUI-ZH.exe ${{ matrix.asset_name }}
+        cp dist/Gamdl-GUI-ZH/Gamdl-GUI-ZH.exe ${{ matrix.asset_name }}
 
     - name: Prepare Upload Asset (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
         # Linux: 直接复制可执行文件
-        cp dist/Gamdl-GUI-ZH ${{ matrix.asset_name }}
+        cp dist/Gamdl-GUI-ZH/Gamdl-GUI-ZH ${{ matrix.asset_name }}
         
     - name: Prepare Upload Asset (macOS)
       if: matrix.os == 'macos-latest'
       run: |
         # macOS: 压缩 .app 文件
         cd dist
-        zip -r ../${{ matrix.asset_name }} Gamdl-GUI-ZH.app
+        zip -r Gamdl-GUI-ZH-macOS.zip Gamdl-GUI-ZH.app
+        mv Gamdl-GUI-ZH-macOS.zip ../${{ matrix.asset_name }}
 
     - name: Release
       uses: softprops/action-gh-release@v1
