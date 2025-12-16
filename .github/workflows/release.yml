@@ -56,19 +56,21 @@ jobs:
     - name: Prepare Upload Asset (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        cd dist/Gamdl-GUI-ZH
-        move Gamdl-GUI-ZH.exe ../../${{ matrix.asset_name }}
+        # Windows: 直接复制可执行文件
+        cp dist/Gamdl-GUI-ZH.exe ${{ matrix.asset_name }}
 
     - name: Prepare Upload Asset (Linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        cd dist/Gamdl-GUI-ZH
-        mv Gamdl-GUI-ZH ../../${{ matrix.asset_name }}
+        # Linux: 直接复制可执行文件
+        cp dist/Gamdl-GUI-ZH ${{ matrix.asset_name }}
         
     - name: Prepare Upload Asset (macOS)
       if: matrix.os == 'macos-latest'
       run: |
-        mv dist/Gamdl-GUI-ZH-macOS.zip ${{ matrix.asset_name }}
+        # macOS: 压缩 .app 文件
+        cd dist
+        zip -r ../${{ matrix.asset_name }} Gamdl-GUI-ZH.app
 
     - name: Release
       uses: softprops/action-gh-release@v1
