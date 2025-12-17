@@ -3,7 +3,7 @@ name: Release Build
 on:
   push:
     tags:
-      - 'v*' # 当推送 v 开头的标签时触发，例如 v1.0.0
+      - 'v*'
 
 permissions:
   contents: write
@@ -20,7 +20,8 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            asset_name: Gamdl-GUI-ZH-Windows.exe
+            asset_name: Gamdl-GUI-ZH-Windows.zip
+            
           - os: macos-latest
             asset_name: Gamdl-GUI-ZH-macOS.zip
 
@@ -36,25 +37,27 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller
-        # 尝试从requirements.txt安装，如果失败则直接安装
         pip install -r requirements.txt || pip install .
         
     - name: Build with PyInstaller
+      # 使用 matrix 中定义的特定命令
       run: |
-        pyinstaller --clean --noconfirm gui_app.spec
+        pyinstaller --clean --noconfirm Gamdl-GUI-ZH.spec
         
     - name: Prepare Upload Asset (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        # Windows: 直接复制可执行文件
-        cp dist/Gamdl-GUI-ZH/Gamdl-GUI-ZH.exe ${{ matrix.asset_name }}
+        cd dist
+        # Windows: 压缩整个目录
+        zip -r Gamdl-GUI-ZH-Windows.zip Gamdl-GUI-ZH
+        mv Gamdl-GUI-ZH-Windows.zip ../${{ matrix.asset_name }}
 
     - name: Prepare Upload Asset (macOS)
       if: matrix.os == 'macos-latest'
       run: |
-        # macOS: 压缩整个目录
         cd dist
-        zip -r Gamdl-GUI-ZH-macOS.zip Gamdl-GUI-ZH
+        # macOS: 压缩 .app 包
+        zip -r Gamdl-GUI-ZH-macOS.zip Gamdl-GUI-ZH.app
         mv Gamdl-GUI-ZH-macOS.zip ../${{ matrix.asset_name }}
 
     - name: Release

@@ -1,16 +1,58 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
+block_cipher = None
+
 a = Analysis(
     ['gui_app.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=[],
+    hiddenimports=[
+        'gamdl',
+        'gamdl.api',
+        'gamdl.downloader', 
+        'gamdl.interface',
+        'gamdl.cli',
+        'gamdl.cli.cli',
+        'gamdl.cli.constants',
+        'gamdl.cli.utils',
+        'gamdl.downloader.constants',
+        'gamdl.downloader.downloader_base',
+        'gamdl.downloader.downloader_music_video',
+        'gamdl.downloader.downloader_song',
+        'gamdl.downloader.downloader_uploaded_video',
+        'gamdl.downloader.enums',
+        'gamdl.downloader.hardcoded_wvd',
+        'gamdl.interface.types',
+        'gamdl.utils',
+        'async_lru',
+        'httpx',
+        'm3u8',
+        'mutagen',
+        'PIL',
+        'pywidevine',
+        'yt_dlp',
+        'tkinter',
+        'asyncio',
+        'threading',
+        'pathlib',
+        'sys',
+        'os',
+        'logging',
+        'json',
+        'subprocess',
+        'uuid',
+        're',
+        'shutil',
+        'io',
+        'typing',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
+    cipher=block_cipher,
     noarchive=False,
     optimize=0,
 )
@@ -44,7 +86,11 @@ coll = COLLECT(
 )
 app = BUNDLE(
     coll,
-    name='Gamdl-GUI-ZH.app',
+    name='Gamdl-GUI-ZH',
     icon=None,
-    bundle_identifier=None,
+    bundle_identifier='com.github.miniguo.gamdl-gui-zh',
+    info_plist={
+        'CFBundleName': 'Gamdl-GUI-ZH',
+        'CFBundleDisplayName': 'Gamdl GUI',
+    },
 )

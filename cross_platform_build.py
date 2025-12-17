@@ -26,13 +26,10 @@ def build_macos():
     import PyInstaller.__main__
     
     params = [
-        'gui_app.py',
-        '--name=Gamdl-GUI-ZH',
-        '--windowed',
-        '--onedir',
+        'Gamdl-GUI-ZH.spec',
         '--clean',
         '--noconfirm',
-        '--distpath=dist/macos'
+        '--distpath=dist'
     ]
     
     try:
