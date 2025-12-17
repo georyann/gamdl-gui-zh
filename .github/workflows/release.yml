@@ -12,16 +12,17 @@ jobs:
   build-and-release:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
-      fail-fast: false  # 即使一个作业失败，其他作业也会继续执行
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
             asset_name: Gamdl-GUI-ZH-Windows.exe
           - os: macos-latest
             asset_name: Gamdl-GUI-ZH-macOS.zip
-          - os: ubuntu-latest
-            asset_name: Gamdl-GUI-ZH-Linux
 
     steps:
     - uses: actions/checkout@v4
@@ -30,12 +31,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-        
-    - name: Install system dependencies (Ubuntu only)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y zip python3-tk
         
     - name: Install Python dependencies
       run: |
@@ -54,12 +49,6 @@ jobs:
         # Windows: 直接复制可执行文件
         cp dist/Gamdl-GUI-ZH/Gamdl-GUI-ZH.exe ${{ matrix.asset_name }}
 
-    - name: Prepare Upload Asset (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        # Linux: 直接复制可执行文件
-        cp dist/Gamdl-GUI-ZH/Gamdl-GUI-ZH ${{ matrix.asset_name }}
-        
     - name: Prepare Upload Asset (macOS)
       if: matrix.os == 'macos-latest'
       run: |
