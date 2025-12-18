@@ -46,11 +46,10 @@ jobs:
         
     - name: Prepare Upload Asset (Windows)
       if: matrix.os == 'windows-latest'
+      shell: pwsh
       run: |
         cd dist
-        # Windows: 压缩整个目录
-        zip -r Gamdl-GUI-ZH-Windows.zip Gamdl-GUI-ZH
-        mv Gamdl-GUI-ZH-Windows.zip ../${{ matrix.asset_name }}
+        Compress-Archive -Path Gamdl-GUI-ZH -DestinationPath ..\${{ matrix.asset_name }}
 
     - name: Prepare Upload Asset (macOS)
       if: matrix.os == 'macos-latest'
