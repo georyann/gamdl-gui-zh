@@ -1,6 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
+import sys
+
 block_cipher = None
 
 a = Analysis(
@@ -84,13 +86,20 @@ coll = COLLECT(
     upx_exclude=[],
     name='Gamdl-GUI-ZH',
 )
-app = BUNDLE(
-    coll,
-    name='Gamdl-GUI-ZH',
-    icon=None,
-    bundle_identifier='com.github.miniguo.gamdl-gui-zh',
-    info_plist={
-        'CFBundleName': 'Gamdl-GUI-ZH',
-        'CFBundleDisplayName': 'Gamdl GUI',
-    },
-)
+
+if sys.platform == 'darwin':
+    app = BUNDLE(
+        coll,
+        name='Gamdl-GUI-ZH.app',
+        icon=None,
+        bundle_identifier='com.github.miniguo.gamdl-gui-zh',
+        info_plist={
+            'CFBundleName': 'Gamdl-GUI-ZH',
+            'CFBundleDisplayName': 'Gamdl GUI 中文版',
+            'CFBundleIdentifier': 'com.github.miniguo.gamdl-gui-zh',
+            'CFBundleVersion': '0.1.0',
+            'CFBundleShortVersionString': '0.1.0',
+            'NSHumanReadableCopyright': 'Copyright © 2024 miniguo. All rights reserved.',
+            'NSPrincipalClass': 'NSApplication',
+        },
+    )
